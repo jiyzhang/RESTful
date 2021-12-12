@@ -18,7 +18,7 @@ public class AppConfigChangeLog {
     private String serialNumber;
 
     @Column(name = "SessionID", nullable = true, length=36)
-    private String sessionId;
+    private String sessionID;
 
     @Column(name = "ParameterChangeTime", nullable = true)
     private Timestamp parameterChangeTime;

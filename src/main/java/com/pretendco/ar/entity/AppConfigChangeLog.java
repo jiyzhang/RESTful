@@ -23,13 +23,13 @@ public class AppConfigChangeLog {
     @Column(name = "ParameterChangeTime", nullable = true)
     private Timestamp parameterChangeTime;
 
-    @Column(name = "ParameterToBeChanged", length = 20)
+    @Column(name = "ParameterToBeChanged", length = 40)
     private String parameterToBeChanged;
 
-    @Column(name = "ParameterValueBeforeChange", length = 20)
+    @Column(name = "ParameterValueBeforeChange", length = 40)
     private String parameterValueBeforeChange;
 
-    @Column(name = "ParameterValueAfterChange", length = 20)
+    @Column(name = "ParameterValueAfterChange", length = 40)
     private String parameterValueAfterChange;
 
 }

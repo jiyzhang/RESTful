@@ -1,8 +1,6 @@
 package com.pretendco.ar.controller;
 
-import com.pretendco.ar.entity.ActivityLog;
 import com.pretendco.ar.entity.AppConfigChangeLog;
-import com.pretendco.ar.entity.AppConfigChangeLogId;
 import com.pretendco.ar.repository.AppConfigChangeLogRepository;
 import com.pretendco.ar.result.ExceptionMsg;
 import com.pretendco.ar.result.Response;
@@ -12,12 +10,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.Timestamp;
 
 @RestController
 @RequestMapping("appconfigchangelog")
@@ -42,79 +36,66 @@ public class AppConfigChangeLogController {
         return new ResponseData(ExceptionMsg.SUCCESS, list);
     }
 
-
     //GetBySerialNumber
-    @RequestMapping(value = "/{SerialNumber}", method = RequestMethod.GET)
-    public ResponseData getList(@PathVariable("SerialNumber") String serialNumber) throws IOException {
-        List<AppConfigChangeLog> list = acclr.findBySerialNumber(serialNumber);
-        return new ResponseData(ExceptionMsg.SUCCESS, list);
-    }
+    //OR
+    //GetBySerialNumberAndSessionID
+    //serialNumber,sesionID
+    @RequestMapping(value = "/{parameter}", method = RequestMethod.GET)
+    public ResponseData getList(@PathVariable("parameter") String parameter) throws IOException {
+        if (parameter.contains(",") ){
+            String[] ss = parameter.split(",");
+            String serialNumber = ss[0];
+            String sessionID = ss[1];
 
-    //GetByPK ?
-//    @RequestMapping(value = "/{serialNumber}", method = RequestMethod.GET)
-//    public ResponseData find(@PathVariable("serialNumber") String serialNumber) throws IOException {
-//        AppConfigChangeLog accl= acclr.findBySerialNumber(serialNumber);
-//        if (accl != null) {
-//            return new ResponseData(ExceptionMsg.SUCCESS, accl);
-//        }
-//        return new ResponseData(ExceptionMsg.FAILED, accl);
-//    }
+            List<AppConfigChangeLog> list = acclr.findBySerialNumberAndSessionID(serialNumber, sessionID);
+            return new ResponseData(ExceptionMsg.SUCCESS, list);
+        } else {
+            String serialNumber = parameter;
+            List<AppConfigChangeLog> list = acclr.findBySerialNumber(serialNumber);
+            return new ResponseData(ExceptionMsg.SUCCESS, list);
+        }
+    }
 
     //insert
     @RequestMapping(value = "/", method = RequestMethod.POST)
-//    public ResponseData add(AppConfigChangeLog model) {
-//        AppConfigChangeLogId id = new AppConfigChangeLogId(model.
-//        acclr.save(model);
-//        return new ResponseData(ExceptionMsg.SUCCESS, model);
-//    }
-    public ResponseData add(@RequestParam("SerialNumber") String sn,
-                            @RequestParam("SessionID") String sessid,
-                            @RequestParam("ParameterChangeTime") String pctime,
-                            @RequestParam("ParameterToBeChanged") String ptbc,
-                            @RequestParam("ParameterValueBeforeChange") String pbefore,
-                            @RequestParam("ParameterValueAfterChange") String pafter) {
-
-
-        Date pChangeTime = null;
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            pChangeTime = formatter.parse(pctime);
-            System.out.println(formatter.format(pChangeTime));
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        AppConfigChangeLogId id = new AppConfigChangeLogId();
-        id.setSerialNumber(sn);
-        id.setSessionId(sessid);
-        id.setParameterChangeTime( new Timestamp(pChangeTime.getTime()) );
-
-        AppConfigChangeLog model = new AppConfigChangeLog();
-        model.setId(id);
-        model.setParameterToBeChanged(ptbc);
-        model.setParameterValueBeforeChange(pbefore);
-        model.setParameterValueAfterChange(pafter);
-
+    // @RequstBody: httpBody, or using URL parameters
+//    public ResponseData add(@RequestBody AppConfigChangeLog model) {
+    public ResponseData add(AppConfigChangeLog model) {
         acclr.save(model);
         return new ResponseData(ExceptionMsg.SUCCESS, model);
     }
 
-    //UpdateOne, 全部修改
+//    //UpdateOne, 全部修改
 //    @RequestMapping(value = "/{serialNumber}", method = RequestMethod.PUT)
 //    public ResponseData update(AppConfigChangeLog model) {
-//        acclr.save(model);
+//        alr.save(model);
 //        return new ResponseData(ExceptionMsg.SUCCESS, model);
 //    }
 
-//    //deleteOne
-//    @RequestMapping(value = "/{serialNumber}", method = RequestMethod.DELETE)
-//    public Response delete(@PathVariable("serialNumber") String serialNumber) {
-//        AppConfigChangeLog demo = acclr.findBySerialNumber(serialNumber);
-//        if (demo != null) {
-//            acclr.deleteById(serialNumber); //???
-//        }
-//        return result(ExceptionMsg.SUCCESS);
-//        //return new ResponseData(ExceptionMsg.SUCCESS,"");
-//    }
+    //deleteBySerialNumber
+    //OR
+    //deleteBySerialNumberAndSessionID
+    //serialNumber,sesionID
+    @RequestMapping(value = "/{parameter}", method = RequestMethod.DELETE)
+    public Response delete(@PathVariable("parameter") String parameter) {
+        if (parameter.contains(",")) {
+            String[] ss = parameter.split(",");
+            String serialNumber = ss[0];
+            String sessionID = ss[1];
+            List<AppConfigChangeLog> list = acclr.findBySerialNumberAndSessionID(serialNumber, sessionID);
+            for (AppConfigChangeLog item : list) {
+                acclr.deleteById(item.getId());
+            }
+        } else {
+            String serialNumber = parameter;
+            List<AppConfigChangeLog> list = acclr.findBySerialNumber(serialNumber);
+            for (AppConfigChangeLog item : list) {
+                acclr.deleteById(item.getId());
+            }
+        }
+
+        return result(ExceptionMsg.SUCCESS);
+        //return new ResponseData(ExceptionMsg.SUCCESS,"");
+    }
+
 }

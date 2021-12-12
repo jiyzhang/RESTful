@@ -59,6 +59,8 @@ public class ActivityLogController {
 
     //insert
     @RequestMapping(value = "/", method = RequestMethod.POST)
+    // @RequstBody: httpBody, or using URL parameters
+//    public ResponseData add(@RequestBody ActivityLog model) {
     public ResponseData add(ActivityLog model) {
         System.out.println("SerialNumber: " + model.getSerialNumber());
         System.out.println("SessionID: " + model.getSessionID());

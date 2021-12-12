@@ -1,17 +1,27 @@
 package com.pretendco.ar.entity;
 
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import lombok.Data;
+import java.sql.Timestamp;
 
-@Table(name = "AppConfigChangeLog")
+@Table(name = "AppConfigChangeLog", indexes = {
+        @Index(name = "idx_serial_number", columnList = "SerialNumber")
+})
 @Entity
 @Data
 public class AppConfigChangeLog {
-    @EmbeddedId
-    private AppConfigChangeLogId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "SerialNumber", nullable = true, length = 12)
+    private String serialNumber;
+
+    @Column(name = "SessionID", nullable = true, length=36)
+    private String sessionId;
+
+    @Column(name = "ParameterChangeTime", nullable = true)
+    private Timestamp parameterChangeTime;
 
     @Column(name = "ParameterToBeChanged", length = 20)
     private String parameterToBeChanged;

@@ -1,15 +1,25 @@
 package com.pretendco.ar.entity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "SelectionLog" , indexes = {
+        @Index(name = "idx_serial_number_sessionid", columnList = "SerialNumber, SessionID")
+})
 public class SelectionLog {
-    @EmbeddedId
-    private SelectionLogId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @JsonIgnore
+    private long id;
+
+    @Column(name = "SerialNumber", nullable = true, length = 12)
+    private String serialNumber;
+    @Column(name = "SessionID", nullable = true, length=36)
+    private String sessionID;
 
     @Column(name = "SelectedWatchSeries", length = 20)
     private String selectedWatchSeries;

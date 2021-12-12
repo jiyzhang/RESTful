@@ -1,4 +1,4 @@
 FROM java:11
-ADD target/demo-0.0.1-SNAPSHOT.jar demo.jar
+ADD target/RESTful-0.0.2-SNAPSHOT.jar restful.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/demo.jar"]
+ENTRYPOINT ["java","-jar","/restful.jar"]

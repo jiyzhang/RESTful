@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.sql.SQLOutput;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,12 +70,30 @@ public class ActivityLogController {
         return new ResponseData(ExceptionMsg.SUCCESS, model);
     }
 
-//    //UpdateOne, 全部修改
-//    @RequestMapping(value = "/{serialNumber}", method = RequestMethod.PUT)
-//    public ResponseData update(ActivityLog model) {
-//        alr.save(model);
-//        return new ResponseData(ExceptionMsg.SUCCESS, model);
-//    }
+    //UpdateOneField: PATCH
+    //UpdateAllFields: PUT, null for fields not mentioned in SQL
+    @RequestMapping(value = "/", method = RequestMethod.PATCH)
+    public ResponseData update(ActivityLog model) {
+        String sessionID = model.getSessionID();
+        Timestamp sessionTerminationTime = model.getSessionTerminationTime();
+
+        List<ActivityLog> als = alr.findBySessionID(sessionID);
+        int count = als.size();
+        if( count == 0 ) {
+            return new ResponseData(ExceptionMsg.NORECORDFOUND);
+        }else if( count == 1 ) {
+            ActivityLog al = als.get(0);
+            al.setSessionTerminationTime(sessionTerminationTime);
+            alr.save(al);
+            return new ResponseData(ExceptionMsg.SUCCESS, al);
+        }else {
+//            for(ActivityLog al:als) {
+//                al.setSessionTerminationTime(sessionTerminationTime);
+//                alr.save(al);
+//            }
+            return new ResponseData(ExceptionMsg.MORETHANONERECFOUND);
+        }
+    }
 
     //deleteBySerialNumber
     //OR

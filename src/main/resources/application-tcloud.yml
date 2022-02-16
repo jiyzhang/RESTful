@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://bj-cdb-6wj01wlc.sql.tencentcdb.com:60295/applewatch?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=true
+    username: watchadmin
+    password: Apple321!
+    # Hikari 数据源专用配置
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+  # JPA 相关配置
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  ssl:
+    enabled: true
+    # keystore 文件
+    key-store: classpath:ssl/aarstore.com.keystore
+    key-store-type: PKCS12
+    # keystore的密码
+    key-store-password: Apple321!

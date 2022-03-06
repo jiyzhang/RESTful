@@ -19,9 +19,4 @@ server:
   servlet:
     context-path: /
   ssl:
-    enabled: true
-    # keystore 文件
-    key-store: classpath:ssl/aarstore.com.keystore
-    key-store-type: PKCS12
-    # keystore的密码
-    key-store-password: Apple321!
+    enabled: false
